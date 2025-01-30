@@ -8,7 +8,7 @@ const videoRoutes = require('./routes/videoRoutes');
 
 
 const app = express();
-const PORT = 5000;
+const PORT = 8080;
 
 // Middleware
 app.use(cors());
