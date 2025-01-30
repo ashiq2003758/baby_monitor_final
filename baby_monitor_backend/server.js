@@ -1,15 +1,14 @@
 const express = require("express");
-const multer = require("multer");
 const classifyRoute = require("./routes/classifyRoute");
+const cors = require("cors");
 
 const app = express();
 const port = 8080;
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Enable CORS to allow requests from Flutter
+app.use(cors());
 
-// API Routes
+// API Route
 app.use("/classify", classifyRoute);
 
 // Start Server

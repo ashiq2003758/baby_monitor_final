@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import 'options_page.dart'; // Import the new options page
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -43,8 +44,11 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login Successful!')),
         );
-        // Navigate to the next screen, e.g., HomePage
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
+        // Navigate to the OptionsPage after successful login
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const OptionsPage()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['message'] ?? 'Login Failed')),
