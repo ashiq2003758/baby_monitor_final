@@ -25,26 +25,38 @@ class _DetectEmotionPageState extends State<DetectEmotionPage> {
   }
 
   Future<void> _initializeRecorder() async {
-    await _recorder.openRecorder();
+    try {
+      await _recorder.openRecorder();
+    } catch (e) {
+      debugPrint("Error initializing recorder: $e");
+    }
   }
 
   Future<void> _startRecording() async {
-    final tempDir = await getTemporaryDirectory();
-    final filePath = "${tempDir.path}/recorded_audio.aac";
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final filePath = "${tempDir.path}/recorded_audio.aac";
 
-    await _recorder.startRecorder(toFile: filePath);
-    setState(() {
-      _isRecording = true;
-      _recordedFilePath = filePath;
-    });
+      await _recorder.startRecorder(toFile: filePath);
+      setState(() {
+        _isRecording = true;
+        _recordedFilePath = filePath;
+      });
+    } catch (e) {
+      debugPrint("Error starting recording: $e");
+    }
   }
 
   Future<void> _stopRecording() async {
-    final path = await _recorder.stopRecorder();
-    setState(() {
-      _isRecording = false;
-      _recordedFilePath = path;
-    });
+    try {
+      final path = await _recorder.stopRecorder();
+      setState(() {
+        _isRecording = false;
+        _recordedFilePath = path;
+      });
+    } catch (e) {
+      debugPrint("Error stopping recording: $e");
+    }
   }
 
   Future<void> _sendAudio() async {
@@ -55,7 +67,7 @@ class _DetectEmotionPageState extends State<DetectEmotionPage> {
       return;
     }
 
-    var uri = Uri.parse("http://localhost:8080/classify"); // ✅ Correct endpoint
+    var uri = Uri.parse("http://localhost:8080/classify");
     var request = http.MultipartRequest('POST', uri)
       ..files.add(await http.MultipartFile.fromPath('audio', _recordedFilePath!));
 
@@ -115,6 +127,7 @@ class _DetectEmotionPageState extends State<DetectEmotionPage> {
     );
   }
 }
+
 
 
 

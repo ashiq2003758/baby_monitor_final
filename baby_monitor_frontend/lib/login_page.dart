@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import 'options_page.dart'; // Import the new options page
+import 'signup_page.dart'; // Import the signup page
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -91,10 +92,22 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: _login,
                     child: const Text('Login'),
                   ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () {
+                // Navigate to the Signup Page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SignupPage()),
+                );
+              },
+              child: const Text("Don't have an account? Sign up"),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
 
