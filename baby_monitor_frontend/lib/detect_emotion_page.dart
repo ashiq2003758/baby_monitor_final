@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DetectEmotionPage extends StatefulWidget {
   const DetectEmotionPage({super.key});
@@ -26,7 +27,15 @@ class _DetectEmotionPageState extends State<DetectEmotionPage> {
 
   Future<void> _initializeRecorder() async {
     try {
+      // Request microphone permission
+      var status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        debugPrint("Microphone permission denied");
+        return;
+      }
+
       await _recorder.openRecorder();
+      _recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
     } catch (e) {
       debugPrint("Error initializing recorder: $e");
     }
@@ -67,8 +76,13 @@ class _DetectEmotionPageState extends State<DetectEmotionPage> {
       return;
     }
 
-    var uri = Uri.parse("http://localhost:8080/classify");
+    // Replace 'localhost' with your PC's IP address if testing on a real device
+    var uri = Uri.parse("http://192.168.X.X:8080/classify"); // Change this IP
+
     var request = http.MultipartRequest('POST', uri)
+      ..headers.addAll({
+        "Content-Type": "multipart/form-data"
+      })
       ..files.add(await http.MultipartFile.fromPath('audio', _recordedFilePath!));
 
     try {
@@ -95,8 +109,9 @@ class _DetectEmotionPageState extends State<DetectEmotionPage> {
 
   @override
   void dispose() {
-    _recorder.closeRecorder();
-    super.dispose();
+    _recorder.closeRecorder().then((_) {
+      super.dispose();
+    });
   }
 
   @override
